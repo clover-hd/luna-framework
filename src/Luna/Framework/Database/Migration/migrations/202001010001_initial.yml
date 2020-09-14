@@ -1,0 +1,31 @@
+up:
+  create:
+    table:
+      db_migrations:
+        primary_key:
+          - id
+        columns:
+          - name: id
+            type: bigint
+            increment: true
+            comment: ID
+          - name: application_name
+            type: varchar
+            size: 50
+            comment: migration appilication name
+          - name: migration_code
+            type: char
+            size: 20
+          - name: created_at
+            type: datetime
+            default: current_timestamp
+          - name: updated_at
+            type: datetime
+            default: current_timestamp
+            on_update: current_timestamp
+
+down:
+  drop:
+    table:
+      - db_migrations
+      
