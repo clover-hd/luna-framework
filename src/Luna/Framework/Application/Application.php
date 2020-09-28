@@ -98,6 +98,11 @@ class Application
     {
         $url = '';
         $hostname = $_SERVER['HTTP_HOST'];
+
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+            $_SERVER['HTTPS'] = 'on';
+        }
+        
         $protocol = $_SERVER['PROTOCOL'] = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
         $port = $_SERVER['SERVER_PORT'];
         if (($protocol == 'https' && $port == '443') || ($protocol == 'http' && $port == '80'))
