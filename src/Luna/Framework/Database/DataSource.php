@@ -67,4 +67,38 @@ class DataSource
 
         return DataSource::$dsArray[$datasourceName];
     }
+
+    /**
+     * ReadOnly接続用インスタンスを生成する
+     *
+     * @param string $datasourceName データソース名
+     * @return Connection
+     */
+    public static function getReadOnlyDataSource(string $datasourceName = 'default')
+    {
+        $readOnlyDatasourceName = $datasourceName . '_read';
+
+        if (isset(DataSource::$dsArray[$readOnlyDatasourceName]) == false) {
+            $datasource = DataSource::getDataSourceConfigration($readOnlyDatasourceName);
+
+            if ($datasource == null) {
+                return DataSource::getDataSourceConfigration($datasourceName);
+            }
+
+            $dataSourceClass = $datasource['datasource_class'];
+            $dbconn = new $dataSourceClass(
+                $readOnlyDatasourceName,
+                $datasource['database']['dsn'],
+                $datasource['database']['user'],
+                $datasource['database']['password'],
+                $datasource['database']['options']
+            );
+
+            $dbconn->connect();
+
+            DataSource::$dsArray[$readOnlyDatasourceName] = $dbconn;
+        }
+
+        return DataSource::$dsArray[$datasourceName];
+    }
 }

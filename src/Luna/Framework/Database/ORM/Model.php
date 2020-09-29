@@ -20,6 +20,12 @@ class Model
      */
     private $connection = null;
     /**
+     * ReadOnlyConnection
+     *
+     * @var Connection
+     */
+    private $readOnlyConnection = null;
+    /**
      * データソース名
      *
      * @var string
@@ -178,8 +184,12 @@ class Model
     public function __construct(string $datasourceName = 'default')
     {
         $this->datasourceName = $datasourceName;
+        // Read/Writeデータソース
         $this->connection = DataSource::getDataSource($datasourceName);
+        // ReadOnlyデータソース
+        $this->readOnlyConnection = DataSource::getReadOnlyDataSource($datasourceName);
         $this->setLogger(new Logger());
+
     }
 
     /**
@@ -188,6 +198,14 @@ class Model
     public function getConnection(): Connection
     {
         return $this->connection;
+    }
+
+    /**
+     * ReadOnlyConnectionを返す
+     */
+    public function getReadOnlyConnection(): Connection
+    {
+        return $this->readOnlyConnection;
     }
 
     /**
@@ -554,9 +572,9 @@ class Model
     public function getRecordSet(): ResultSet
     {
         $sql = SQLBuilder::select($this);
-        $stmt = $this->connection->createStatement($sql);
+        $stmt = $this->readOnlyConnection->createStatement($sql);
         $result = $stmt->execute();
-        $result->setModel(get_class($this), $this->datasourceName);
+        $result->setModel(get_class($this), $this->readOnlyConnection->getDatasourceName());
         return $result;
     }
 
@@ -719,11 +737,11 @@ class Model
         $select = $this->select;
         $this->select = ['COUNT(*) AS C'];
         $sql = SQLBuilder::select($this);
-        $stmt = $this->connection->createStatement($sql);
+        $stmt = $this->readOnlyConnection->createStatement($sql);
         $result = $stmt->execute();
         $this->select = $select;
 
-        $result->setModel(get_class($this), $this->datasourceName);
+        $result->setModel(get_class($this), $this->readOnlyConnection->getDatasourceName());
         $result->next();
         if ($result->valid()) {
             return $result->current()->C;
@@ -744,13 +762,13 @@ class Model
         $this->limitValue = null;
         $this->offsetValue = null;
         $sql = SQLBuilder::select($this);
-        $stmt = $this->connection->createStatement($sql);
+        $stmt = $this->readOnlyConnection->createStatement($sql);
         $result = $stmt->execute();
         $this->select = $select;
         $this->limitValue = $limit;
         $this->offsetValue = $offset;
 
-        $result->setModel(get_class($this), $this->datasourceName);
+        $result->setModel(get_class($this), $this->readOnlyConnection->getDatasourceName());
         $result->next();
         if ($result->valid()) {
             return $result->current()->C;
