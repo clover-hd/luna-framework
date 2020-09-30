@@ -211,7 +211,9 @@ class Logger implements LoggerInterface
         if ($this->output == 'file') {
             file_put_contents($this->logfile, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
         } else if ($this->output == 'stdout') {
-            fputs(STDOUT, $text . "\n");
+            $fp = fopen('php://stdout', 'wb');
+            fputs($fp, $text . "\n");
+            fclose($fp);
         } else if ($this->output == 'php') {
             error_log($text . "\n", 0);
         }
