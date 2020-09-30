@@ -18,25 +18,31 @@ class Logger implements LoggerInterface
      *
      * @var Application
      */
-    private $application;
+    protected $application;
     /**
      * リクエストインスタンス
      *
      * @var Request
      */
-    private $request;
+    protected $request;
     /**
      * ログレベル
      *
      * @var string
      */
-    private $logLevel;
+    protected $logLevel;
     /**
      * ログファイル
      *
      * @var string
      */
-    private $logfile;
+    protected $logfile;
+    /**
+     * ログ出力先(file,stdout,php)
+     *
+     * @var string
+     */
+    protected $output;
 
     /**
      * コンストラクタ
@@ -49,6 +55,11 @@ class Logger implements LoggerInterface
         $this->request = new Request($this->application);
         $configParams = $this->application->getConfig()->getConfigParams();
         $this->logLevel = $configParams['system']['log']['loglevel'];
+        if (isset($configParams['system']['log']['output'])) {
+            $this->output = $configParams['system']['log']['output'];
+        } else {
+            $this->output = 'file';
+        }
         $projectPath = Application::getInstance()->getProjectPath();
         $this->logfile = $projectPath . '/log/application-' . date('Ymd') . '.log';
     }
@@ -197,6 +208,12 @@ class Logger implements LoggerInterface
     public function log($level, $message, array $context = array())
     {
         $text = $this->datetimeString() . "\t" . $this->request->getClientIPAddress() . "\t" . strtoupper($level) . "\t" . $this->interpolate($message, $context);
-        file_put_contents($this->logfile, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
+        if ($this->output == 'file') {
+            file_put_contents($this->logfile, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
+        } else if ($this->output == 'stdout') {
+            fputs(STDOUT, $text . "\n");
+        } else if ($this->output == 'php') {
+            error_log($text . "\n", 0);
+        }
     }
 }
