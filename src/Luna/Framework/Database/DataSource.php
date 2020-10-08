@@ -82,7 +82,7 @@ class DataSource
             $datasource = DataSource::getDataSourceConfigration($readOnlyDatasourceName);
 
             if ($datasource == null) {
-                return DataSource::getDataSourceConfigration($datasourceName);
+                return DataSource::getDataSource($datasourceName);
             }
 
             $dataSourceClass = $datasource['datasource_class'];
