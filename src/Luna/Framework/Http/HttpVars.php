@@ -54,7 +54,7 @@ class HttpVars implements Iterator
 
     public function current()
     {
-        return $this->currentValue;
+        return $this->vars[$this->keys[$this->position]];
     }
 
     public function key()
@@ -65,12 +65,6 @@ class HttpVars implements Iterator
     public function next()
     {
         $this->position++;
-        if (count($this->keys) > $this->position
-            && array_key_exists($this->keys[$this->position], c)) {
-            $this->currentValue = $this->vars[$this->keys[$this->position]];
-        } else {
-            $this->currentValue = false;
-        }
     }
 
     public function rewind()
@@ -80,7 +74,7 @@ class HttpVars implements Iterator
 
     public function valid()
     {
-        return false;
+        return isset($this->keys[$this->position]);
     }
 
     public function count()
