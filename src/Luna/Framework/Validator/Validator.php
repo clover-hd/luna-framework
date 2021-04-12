@@ -95,6 +95,9 @@ class Validator
                 } else if ($ruleType == "date_with") {
                     // 日付形式チェック(複数フィールド)
                     $this->validateDateWith($params, $column, $ruleValue);
+                } else if ($ruleType == "datetime") {
+                    // 日付形式チェック(yyyy-mm-dd H:i:s, yyyy/mm/dd H:i:s)
+                    $this->validateDatetime($params, $column);
                 } else if ($ruleType == "time") {
                     // 時刻形式チェック
                     $this->validateTime($params, $column);
@@ -321,14 +324,54 @@ class Validator
         }
     }
 
+    protected function validateDatetime(array $params, string $column)
+    {
+        if (isset($params[$column]) && $params[$column] !== '') {
+            list($paramDate, $paramTime) = explode(' ', $params[$column]);
+            if (preg_match('/^([1-9][0-9]{3})[-\/](0[1-9]{1}|1[0-2]{1})[-\/](0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})$/', $paramDate) === 1)
+            {
+                list($year, $month, $date) = preg_split('/[-\/]/', $paramDate);
+                $checkDate = sprintf('%04d-%02d-%02d', $year, $month, $date);
+                $formattedDate = date('Y-m-d', mktime(0, 0, 0, $month, $date, $year));
+                if ($checkDate != $formattedDate) {
+                    // 日時が正しくありません
+                    $this->storeError($column, 'datetime');
+                } else {
+                    if (preg_match('/^[0-9]{2}:[0-9]{2}((:[0-9]{2})*)$/u', $paramTime) === 1)
+                    {
+                        list($hour, $minute, $second) = preg_split('/[:\/]/', $paramTime);
+                        $second = $second ? $second : 0;
+                        $time = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
+                        $formattedTime = date('H:i:s', mktime($hour, $minute, $second));
+                        if ($time != $formattedTime) {
+                            // 日時が正しくありません
+                            $this->storeError($column, 'datetime');
+                        }
+                    }
+                    else
+                    {
+                        // 日時が正しくありません
+                        $this->storeError($column, 'datetime');
+                    }
+                }
+            }
+            else
+            {
+                // 日時が正しくありません
+                $this->storeError($column, 'datetime');
+            }
+        }
+    }
+
     protected function validateTime(array $params, string $column)
     {
         if (isset($params[$column]) && $params[$column] !== '') {
-            if (preg_match('/^[0-9]{2}:[0-9]{2}$/u', $params[$column]) === 1)
+            if (preg_match('/^[0-9]{2}:[0-9]{2}((:[0-9]{2})*)$/u', $params[$column]) === 1)
             {
-                list($hour, $minute) = preg_split('/[:\/]/', $params[$column]);
-                $time = sprintf('%02d:%02d', $hour, $minute);
-                $formattedTime = date('H:i', mktime($hour, $minute));
+                list($hour, $minute, $second) = preg_split('/[:\/]/', $params[$column]);
+                $second = $second ? $second : 0;
+                $time = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
+                $formattedTime = date('H:i:s', mktime($hour, $minute, $second));
                 if ($time != $formattedTime) {
                     // 時刻が正しくありません
                     $this->storeError($column, 'time');
