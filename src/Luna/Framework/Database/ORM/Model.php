@@ -328,7 +328,7 @@ class Model
             }
             $updateValues = [];
             foreach ($this->values as $col => $val) {
-                if ($this->originalValues[$col] != $val) {
+                if ($this->originalValues[$col] !== $val) {
                     $updateValues[$col] = $val;
                 }
             }
