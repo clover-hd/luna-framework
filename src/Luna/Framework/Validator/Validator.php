@@ -368,7 +368,7 @@ class Validator
         if (isset($params[$column]) && $params[$column] !== '') {
             if (preg_match('/^[0-9]{2}:[0-9]{2}((:[0-9]{2})*)$/u', $params[$column]) === 1)
             {
-                list($hour, $minute, $second) = preg_split('/[:\/]/', $params[$column]);
+                list($hour, $minute, $second) = array_pad(preg_split('/[:\/]/', $params[$column]), 3, null);
                 $second = $second ? $second : 0;
                 $time = sprintf('%02d:%02d:%02d', $hour, $minute, $second);
                 $formattedTime = date('H:i:s', mktime($hour, $minute, $second));
