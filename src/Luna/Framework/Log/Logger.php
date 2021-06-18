@@ -207,15 +207,54 @@ class Logger implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
-        $text = $this->datetimeString() . "\t" . $this->request->getClientIPAddress() . "\t" . strtoupper($level) . "\t" . $this->interpolate($message, $context);
-        if ($this->output == 'file') {
-            file_put_contents($this->logfile, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
-        } else if ($this->output == 'stdout') {
-            $fp = fopen('php://stdout', 'wb');
-            fputs($fp, $text . "\n");
-            fclose($fp);
-        } else if ($this->output == 'php') {
-            error_log($text . "\n", 0);
+        $outputLevel = $this->getLogLevelNo($level);
+        $confLevel = $this->getLogLevelNo($this->logLevel);
+        if ($outputLevel >= $confLevel) {
+            $text = $this->datetimeString() . "\t" . $this->request->getClientIPAddress() . "\t" . strtoupper($level) . "\t" . $this->interpolate($message, $context);
+            if ($this->output == 'file') {
+                file_put_contents($this->logfile, $text . PHP_EOL, FILE_APPEND | LOCK_EX);
+            } else if ($this->output == 'stdout') {
+                $fp = fopen('php://stdout', 'wb');
+                fputs($fp, $text . "\n");
+                fclose($fp);
+            } else if ($this->output == 'php') {
+                error_log($text . "\n", 0);
+            }
         }
+    }
+
+    private function getLogLevelNo($level)
+    {
+        $levelNo = 0;
+
+        switch ($level)
+        {
+            case LogLevel::DEBUG:
+                $levelNo = 0;
+                break;
+            case LogLevel::INFO:
+                $levelNo = 1;
+                break;
+            case LogLevel::NOTICE:
+                $levelNo = 2;
+                break;
+            case LogLevel::WARNING:
+                $levelNo = 3;
+                break;
+            case LogLevel::ERROR:
+                $levelNo = 4;
+                break;
+            case LogLevel::CRITICAL:
+                $levelNo = 5;
+                break;
+            case LogLevel::ALERT:
+                $levelNo = 6;
+                break;
+            case LogLevel::EMERGENCY:
+                $levelNo = 7;
+                break;
+        }
+
+        return $levelNo;
     }
 }
