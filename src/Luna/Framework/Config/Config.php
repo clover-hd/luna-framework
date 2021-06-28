@@ -156,7 +156,7 @@ class Config
      *
      * @return string
      */
-    public function getEnvitonment()
+    public function getEnvironment()
     {
         return $this->config['system']['environment'];
     }
