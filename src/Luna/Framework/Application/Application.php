@@ -2,6 +2,7 @@
 
 namespace Luna\Framework\Application;
 
+use AppEnv;
 use Locale;
 use Luna\Framework\Config\Config;
 use Symfony\Component\Yaml\Yaml;
@@ -38,6 +39,7 @@ class Application
     private function __construct(array $bootparams)
     {
         $this->bootparams = $bootparams;
+        $this->loadEnvironmentFile();
         $this->loadConfig();
     }
 
@@ -51,6 +53,30 @@ class Application
         }
 
         return Application::$application;
+    }
+
+    public function loadEnvironmentFile()
+    {
+        // デフォルトの.envファイルパス
+        $envFile = "{$this->bootparams['projectPath']}/.env.php";
+        // 環境編集を取得する
+        $env = getenv('ENV');
+        // 環境変数にセットされていれば対応する.envファイルの読み込みを試みる
+        if (empty($env) === false) {
+            // APP_ENVを定義
+            define('APP_ENV', $env);
+            // ENV付ファイルのパス指定
+            $envFile = "{$this->bootparams['projectPath']}/.env.{$env}.php";
+            if (file_exists($envFile)) {
+                // ENV付ファイルのファイルが存在しなければデフォルトのパスに戻す
+                $envFile = "{$this->bootparams['projectPath']}/.env.php";
+            }
+        }
+
+        // .envファイルがあれば読込む
+        if (file_exists($envFile)) {
+            require_once($envFile);
+        }
     }
 
     public function loadConfig()
