@@ -39,8 +39,8 @@ class MYSQLMigration extends Migration
                     $default = \strtoupper($column['default']);
                     if ($default == 'NULL') {
                         $tmp .= " DEFAULT {$column['default']} ";
-                    } else if ($default == 'CURRENT_TIMESTAMP') {
-                        $tmp .= " DEFAULT {$column['default']}() ";
+                    } else if (strcasecmp(trim($default), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($default), 'CURRENT_TIMESTAMP()') == 0) {
+                        $tmp .= " DEFAULT {$column['default']} ";
                     } else {
                         $tmp .= " DEFAULT " . $connection->escapedString($column['default']) . " ";
                     }
@@ -50,8 +50,8 @@ class MYSQLMigration extends Migration
                     $onUpdate = \strtoupper($column['on_update']);
                     if ($onUpdate == 'NULL') {
                         $tmp .= " ON UPDATE {$column['on_update']} ";
-                    } else if ($onUpdate == 'CURRENT_TIMESTAMP') {
-                        $tmp .= " ON UPDATE {$column['on_update']}() ";
+                    } else if (strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP()') == 0) {
+                        $tmp .= " ON UPDATE {$column['on_update']} ";
                     } else {
                         $tmp .= " ON UPDATE " . $connection->escapedString($column['on_update']) . "' ";
                     }
@@ -199,8 +199,8 @@ class MYSQLMigration extends Migration
                         $default = \strtoupper($column['default']);
                         if ($default == 'NULL') {
                             $sql .= " DEFAULT {$column['default']} ";
-                        } else if ($default == 'CURRENT_TIMESTAMP') {
-                            $sql .= " DEFAULT {$column['default']}() ";
+                        } else if (strcasecmp(trim($default), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($default), 'CURRENT_TIMESTAMP()') == 0) {
+                            $sql .= " DEFAULT {$column['default']} ";
                         } else {
                             $sql .= " DEFAULT " . $connection->escapedString($column['default']) . " ";
                         }
@@ -210,8 +210,8 @@ class MYSQLMigration extends Migration
                         $onUpdate = \strtoupper($column['on_update']);
                         if ($onUpdate == 'NULL') {
                             $sql .= " ON UPDATE {$column['on_update']} ";
-                        } else if ($onUpdate == 'CURRENT_TIMESTAMP') {
-                            $sql .= " ON UPDATE {$column['on_update']}() ";
+                        } else if (strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP()') == 0) {
+                            $sql .= " ON UPDATE {$column['on_update']} ";
                         } else {
                             $sql .= " ON UPDATE " . $connection->escapedString($column['on_update']) . " ";
                         }
@@ -350,7 +350,7 @@ class MYSQLMigration extends Migration
                     $default = \strtoupper($column['default']);
                     if ($default == 'NULL') {
                         $tmp .= " DEFAULT {$column['default']} ";
-                    } else if ($default == 'CURRENT_TIMESTAMP') {
+                    } else if (strcasecmp(trim($default), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($default), 'CURRENT_TIMESTAMP()') == 0) {
                         $tmp .= " DEFAULT {$column['default']}() ";
                     } else {
                         $tmp .= " DEFAULT " . $connection->escapedString($column['default']) . " ";
@@ -361,7 +361,7 @@ class MYSQLMigration extends Migration
                     $onUpdate = \strtoupper($column['on_update']);
                     if ($onUpdate == 'NULL') {
                         $tmp .= " ON UPDATE {$column['on_update']} ";
-                    } else if ($onUpdate == 'CURRENT_TIMESTAMP') {
+                    } else if (strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP') == 0 || strcasecmp(trim($onUpdate), 'CURRENT_TIMESTAMP()') == 0) {
                         $tmp .= " ON UPDATE {$column['on_update']}() ";
                     } else {
                         $tmp .= " ON UPDATE " . $connection->escapedString($column['on_update']) . "' ";

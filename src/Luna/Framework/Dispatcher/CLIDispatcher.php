@@ -74,6 +74,24 @@ class CLIDispatcher
 
         $request = new Request($this->application);
         $consoleParams = $this->application->getConfig()->getConsoleParams();
+        // フレームワークコマンド設定
+        $consoleParams['console'] = array_merge(
+            $consoleParams['console'],
+            [
+                'fixture' => [
+                    'class' => 'Luna\Framework\Fixture\FixtureCommand',
+                    'method' => 'handle',
+                ],
+                'migration' => [
+                    'class' => 'Luna\Framework\Database\Migration\Console\MigrationCommand',
+                    'method' => 'handle',
+                ],
+                'generate_migration' => [
+                    'class' => 'Luna\Framework\Database\Migration\Console\GenerateMigrationCommand',
+                    'method' => 'handle',
+                ]
+            ]
+        );
         $commandName = $argv[1];
         $route = $consoleParams['console'][$commandName];
         if (is_array($route) === false) {
