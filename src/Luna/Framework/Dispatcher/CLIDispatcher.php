@@ -82,6 +82,10 @@ class CLIDispatcher
                     'class' => 'Luna\Framework\Fixture\FixtureCommand',
                     'method' => 'handle',
                 ],
+                'generate_fixture' => [
+                    'class' => 'Luna\Framework\Fixture\GenerateFixtureCommand',
+                    'method' => 'handle',
+                ],
                 'migration' => [
                     'class' => 'Luna\Framework\Database\Migration\Console\MigrationCommand',
                     'method' => 'handle',
