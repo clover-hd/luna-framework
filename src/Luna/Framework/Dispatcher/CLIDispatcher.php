@@ -93,6 +93,10 @@ class CLIDispatcher
                 'generate_migration' => [
                     'class' => 'Luna\Framework\Database\Migration\Console\GenerateMigrationCommand',
                     'method' => 'handle',
+                ],
+                'make_migration' => [
+                    'class' => 'Luna\Framework\Database\Migration\Console\MakeMigrationCommand',
+                    'method' => 'handle',
                 ]
             ]
         );
