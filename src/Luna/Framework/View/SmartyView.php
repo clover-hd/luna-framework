@@ -33,6 +33,7 @@ class SmartyView extends View
         // $this->setPluginsDir(LIB_DIR . '/lunafw/smarty_plugins')->addPluginsDir(LIB_DIR . '/smarty_plugins')->addPluginsDir(LIB_DIR . '/smarty/plugins')->addPluginsDir(LIB_DIR . '/smarty/sysplugins');
         $this->smarty->setTemplateDir($this->application->getProjectPath() . '/resources/view/');
         $this->smarty->addPluginsDir(dirname(__FILE__) . '/Smarty/Plugins/');
+        $this->smarty->addPluginsDir($this->application->getProjectPath() . '/resources/view/smarty/plugins/');
         $this->smarty->left_delimiter = '{';
         $this->smarty->right_delimiter = '}';
 
