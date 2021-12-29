@@ -150,4 +150,9 @@ class Application
     {
         return $this->config;
     }
+
+    public function getCommandName(): string
+    {
+        return $this->bootparams['commandName'];
+    }
 }
